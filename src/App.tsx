@@ -6,7 +6,6 @@ import { Dashboard } from './pages/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import { PrivateRoute } from './components/PrivateRoute/PrivateRoute';
 import { ProductsCacheProvider } from './context/ProductsCacheContext';
-import React from 'react';
 
 const App = () => {
     return (
