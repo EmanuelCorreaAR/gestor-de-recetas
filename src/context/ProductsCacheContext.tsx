@@ -1,31 +1,15 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { fetchProducts } from '../utils/store';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { fetchProducts } from '../utils/store.js';
 
-// Definir los tipos para el contexto de productos
-interface Product {
-    id: string;
-    title: string;
-    description: string;
-    image: string;
-}
-
-interface ProductsCacheContextType {
-    products: Product[];
-    loading: boolean;
-    loadProducts: () => Promise<void>;
-    updateProductsCache: (updatedProducts: Product[]) => void;
-}
-
-const ProductsCacheContext = createContext<ProductsCacheContextType | undefined>(undefined);
+const ProductsCacheContext = createContext();
 
 const CACHE_KEY = import.meta.env.VITE_CACHE_KEY;
 
-// Proveedor del contexto de productos
-export const ProductsCacheProvider = ({ children }: { children: ReactNode }): JSX.Element => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+export const ProductsCacheProvider = ({ children }) => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const loadProducts = async (): Promise<void> => {
+    const loadProducts = async () => {
         setLoading(true);
         const cachedProducts = localStorage.getItem(CACHE_KEY);
         if (cachedProducts) {
@@ -43,7 +27,7 @@ export const ProductsCacheProvider = ({ children }: { children: ReactNode }): JS
         loadProducts();
     }, []);
 
-    const updateProductsCache = (updatedProducts: Product[]): void => {
+    const updateProductsCache = (updatedProducts) => {
         setProducts(updatedProducts);
         localStorage.setItem(CACHE_KEY, JSON.stringify(updatedProducts));
     };
@@ -55,11 +39,4 @@ export const ProductsCacheProvider = ({ children }: { children: ReactNode }): JS
     );
 };
 
-// Hook para consumir el contexto de productos
-export const useProductsCache = (): ProductsCacheContextType => {
-    const context = useContext(ProductsCacheContext);
-    if (!context) {
-        throw new Error("useProductsCache debe ser utilizado dentro de un ProductsCacheProvider");
-    }
-    return context;
-};
+export const useProductsCache = () => useContext(ProductsCacheContext);

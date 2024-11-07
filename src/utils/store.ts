@@ -1,21 +1,13 @@
-import { db } from '../config/firebaseConfig';
-import {collection,getDocs,addDoc,updateDoc,deleteDoc,doc} from 'firebase/firestore';
+import { db } from '../config/firebaseConfig.js';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 
-// Definición de tipos para el producto
-interface Product {
-    title: string;
-    description: string;
-    image?: string;
-}
-
-// Colección de productos
 const productsCollection = collection(db, 'products');
 
 // Obtener todos los productos
-export const fetchProducts = async (): Promise<Product[]> => {
+export const fetchProducts = async () => {
     try {
         const querySnapshot = await getDocs(productsCollection);
-        const products = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Product[];
+        const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         return products;
     } catch (error) {
         console.error("Error fetching products:", error);
@@ -24,10 +16,10 @@ export const fetchProducts = async (): Promise<Product[]> => {
 };
 
 // Agregar un nuevo producto
-export const addProduct = async (product: Product): Promise<Product | void> => {
+export const addProduct = async (product) => {
     try {
         const docRef = await addDoc(productsCollection, product);
-        console.log("Producto agregado exitosamente.");
+        console.log("Producto agregado exitosamente:");
         return { id: docRef.id, ...product };
     } catch (error) {
         console.error("Error adding product:", error);
@@ -35,7 +27,7 @@ export const addProduct = async (product: Product): Promise<Product | void> => {
 };
 
 // Actualizar un producto existente
-export const updateProduct = async (id: string, updatedProduct: Partial<Product>): Promise<void> => {
+export const updateProduct = async (id, updatedProduct) => {
     try {
         const productDoc = doc(db, 'products', id);
         await updateDoc(productDoc, updatedProduct);
@@ -46,7 +38,7 @@ export const updateProduct = async (id: string, updatedProduct: Partial<Product>
 };
 
 // Eliminar un producto
-export const deleteProduct = async (id: string): Promise<void> => {
+export const deleteProduct = async (id) => {
     try {
         const productDoc = doc(db, 'products', id);
         await deleteDoc(productDoc);
